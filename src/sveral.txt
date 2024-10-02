@@ -1,0 +1,24 @@
+// App.js
+import React, { useRef } from "react";
+import CameraFeed from "./CameraFeed";
+import ObjectDetection from "./ObjectDetection";
+import "./App.css";
+
+function App() {
+  const webcamRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        {/* CameraFeed Component */}
+        <CameraFeed webcamRef={webcamRef} canvasRef={canvasRef} />
+
+        {/* ObjectDetection Component */}
+        <ObjectDetection webcamRef={webcamRef} canvasRef={canvasRef} />
+      </header>
+    </div>
+  );
+}
+
+export default App;

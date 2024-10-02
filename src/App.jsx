@@ -9,6 +9,8 @@ function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [detections, setDetections] = useState([]);
+  const [bullets, setBullets] = useState(10); // State to hold remaining bullets
+  const audioRef = useRef(null); // Create audio reference
 
   // Main function to run COCO-SSD
   const runCoco = async () => {
@@ -59,7 +61,27 @@ function App() {
 
   useEffect(() => {
     runCoco();
+    // Initialize the audio reference with the shooting sound
+    audioRef.current = new Audio(`/shoot.wav`); // Updated path for Vite
   }, []);
+
+  // Function to handle shooting
+  const handleShoot = () => {
+    if (bullets > 0) {
+      setBullets((prevBullets) => prevBullets - 1);
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play(); // Play shooting sound
+      }
+    } else {
+      alert("No bullets left! Click 'Reload' to reload.");
+    }
+  };
+
+  // Function to reload bullets
+  const reload = () => {
+    setBullets(10);
+  };
 
   return (
     <div
@@ -72,6 +94,7 @@ function App() {
         overflow: "hidden",
         position: "relative",
       }}
+      onClick={handleShoot} // Add click event for shooting
     >
       <header
         className="App-header"
@@ -106,6 +129,54 @@ function App() {
             pointerEvents: "none",
           }}
         />
+
+        {/* Central Crosshair */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 11,
+            color: "red",
+            fontSize: "24px",
+          }}
+        >
+          +
+        </div>
+
+        {/* Bullet Counter */}
+        <div
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            zIndex: 12,
+            color: "white",
+            fontSize: "24px",
+          }}
+        >
+          Bullets: {bullets}
+        </div>
+
+        {/* Reload Button */}
+        <button
+          onClick={reload}
+          style={{
+            position: "absolute",
+            bottom: "10px",
+            left: "10px",
+            zIndex: 12,
+            backgroundColor: "red",
+            color: "white",
+            fontSize: "18px",
+            border: "none",
+            padding: "10px 20px",
+            cursor: "pointer",
+          }}
+        >
+          Reload
+        </button>
       </header>
     </div>
   );
